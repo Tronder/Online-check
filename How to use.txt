@@ -1,0 +1,4 @@
+1. Close google chrome if it is open.
+1. Open CORS file (this opens chrome without security, needed for fetching is7 data - "scraping")
+2. Open Index.html
+3. Select country, paste articles and then click search.
