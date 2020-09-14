@@ -1,4 +1,4 @@
-First: Create a new shortcut to chrome, right-click, select properties, under shortcut tab set Target = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=c:\temp\chrome
+First: Create a new shortcut to chrome. Then right-click on the new shortcut icon, select properties, under shortcut tab set Target = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=c:\temp\chrome
 
 1. Close google chrome if it is open.
 1. Open new Google chrome shortcut (this opens chrome without security, needed for fetching is7 data - "scraping")
