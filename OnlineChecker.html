@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>IS7 Product status</title>
+        <style>html{
+            background: rgb(34,193,195);
+            background: linear-gradient(197deg, rgba(34,193,195,1) 0%, rgba(45,253,114,0.3393732492997199) 100%);
+            /* background-color: #bcecff;
+            margin: 0; */
+        }
+        body{
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            margin-left: 15px;
+            min-height: 2200px;
+        }
+        form{
+            display: block;
+        }
+        /* .container{
+            display: flex;
+            flex-direction: row;
+        } */
+        .html2{
+            margin-left: 5px;
+        }
+        .results, .err{
+            display: none; 
+        }
+        table{
+            border: 1px solid black;
+            margin: 10px 0 0 0 ;
+            border-collapse: collapse;
+            width: 90%;
+        }
+        th{
+            background-color: honeydew;
+        }
+        
+        tr {
+            border: 1px solid green;
+            font-weight: bold;
+            padding: 8px;
+            text-align: center;
+        }
+        .online, .buyable {
+            background-color: green;
+            color: blanchedalmond;
+            font-weight: bold;
+        }
+        tr .notOnline{
+            background-color: indianred;
+            font-weight: bold;
+        }
+        a {
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+        }
+        #inputText, button{
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+        button{
+            margin: 10px 5px 5px 0 ;
+        }
+        button:active{
+            box-shadow: none;
+        }
+        .loading {
+            display: none;
+            font-size: 2em;
+            animation: effect 2s infinite;
+            text-align: center;
+          }
+          
+          @keyframes effect {
+            0% {
+              color: black;
+            }
+            50% {
+              color: red;
+            }</style>
+
+    </head>
+    <body>
+        <header>
+            <div class="header">
+                <h1>Intershop7 - Product status (beta.2)</h1>
+            </div>
+        </header>
+
+        <div class="countrySelect">
+            <p>Please select country:</p>
+            <input type="radio" id="sweden" name="country" value="https://www.elgiganten.se/product/">
+            <label for="sweden">Sweden</label><br>
+            <input type="radio" id="denmark" name="country" value="https://www.elgiganten.dk/product/">
+            <label for="denmark">Denmark</label><br>
+            <input type="radio" id="finland" name="country" value="https://www.gigantti.fi/product/">
+            <label for="finland">Finland</label><br>
+            <input type="radio" id="norway" name="country" value="https://www.elkjop.no/product/" checked>
+            <label for="norway">Norway</label><br>
+        </div>
+<br>
+        <form class="input">
+            <label>Paste articles here:<br></label>
+            <textarea name="Article codes" id="inputText" cols="30" rows="12" placeholder="Paste here..."></textarea><br>
+            <button type="button" class="btn">Check Article status / stock / delivery date</button>
+            <button type="button" class="clear">Clear</button>
+        </form>
+        <div class="container">
+            <div class="loading">
+                <h2>Loading</h2>
+            </div>
+            <div class="results"></div>
+            <div>
+                <table class="testResults">
+
+                </table>
+            </div>
+       </div>
+        <script>
+            const message = document.querySelector("#inputText");
+const button = document.querySelector(".btn");
+const button2 = document.querySelector(".clear");
+const loader = document.querySelector(".loading");
+
+
+let textValue = "";
+let country;
+
+const html = document.querySelector(".results");
+const html2 = document.querySelector(".testResults");
+
+message.onkeyup = function logText() {
+    const textValue = event.target.value.trim();
+
+    async function checkStock(textValue){
+    
+        var lines = textValue.split('\n');
+        for(var i = 0;i < lines.length;i++){
+            //code here using lines[i] which will give you each line
+            let artNr = lines[i];
+            console.log(artNr);
+            let country = document.querySelector('input[name="country"]:checked').value;
+            console.log(country);
+            try{
+
+                // fetch result
+                const result = await fetch(country + artNr + "/");
+                console.log(result);
+                const text = await result.text();
+
+                // if (HER MÅ DET SETTES IF PÅ OM BODY CLASS INNEHOLDER 'productdetail') - har fikset workaround
+                const regex = RegExp('product-title');
+                const regex2 = RegExp('button-wrap cas two-inline only-one-button')
+
+                if(regex.test(text) === true){
+                                        // console.log(text);
+                    console.log(text.match(/<span\s+class="checkout-spacing">[\S\s]*?<\/span>/i));
+                    const avail = text.match(/<span\s+class="checkout-spacing">[\S\s]*?<\/span>/i);
+                    console.log(text.match(/<span\s+class="items-in-stock align-left">[\S\s]*?<\/span>/i));
+                    const avail2 = text.match(/<span\s+class="items-in-stock align-left">[\S\s]*?<\/span>/i);
+
+                    // kode som skaper html:
+                    if(avail === null && avail2 === null){
+                        html.innerHTML += `<P>X Article: <b>${artNr}</b>  Status: Not online<a href="${country}${artNr}/" target="_blank">Inspect</a></p>`;
+                        html2.innerHTML += `<tr><td class="err">X</td><td>${artNr}</td><td class="online">Yes</td><td class="notOnline">No</td><td>No buy button</td><td><a href="${country}${artNr}/ target="_blank"">Product page</a></td>`;
+                    }else if(regex2.test(text) === true){
+                        html.innerHTML += `<P>X Article: <b>${artNr}</b>  Status: Not online<a href="${country}${artNr}/" target="_blank">Inspect</a></p>`;
+                        html2.innerHTML += `<tr><td class="err">X</td><td>${artNr}</td><td class="online">Yes</td><td class="notOnline">No</td><td>No buy button</td><td><a href="${country}${artNr}/" target="_blank">Product page</a></td>`;
+                    }else if(avail2 === null){
+                        html.innerHTML += `<p>X1 Article: <b>${artNr}</b>   Status: ${avail}<a href="${country}${artNr}/" target="_blank">Inspect</a></p>`;
+                        html2.innerHTML += `<tr><td class="err">X1</td><td>${artNr}</td><td class="online">Yes</td><td class="buyable">Yes</td><td>${avail}</td><td><a href="${country}${artNr}/" target="_blank">Product page</a></td>`;
+                    }else{
+                        html.innerHTML += `<p>X2 Article: <b>${artNr}</b>   Status: ${avail2}<a href="${country}${artNr}/" target="_blank">Inspect</a></p>`;
+                        html2.innerHTML += `<tr><td class="err">X2</td><td>${artNr}</td><td class="online">Yes</td><td class="buyable">Yes</td><td>${avail2}</td><td><a href="${country}${artNr}/" target="_blank">Product page</a></td>`;
+                        }          
+
+                }else{
+                    html.innerHTML += `<P>Z Article: <b>${artNr}</b>  Status: Not online<a href="${country}${artNr}/" target="_blank">Inspect</a></p>`;    
+                    html2.innerHTML += `<tr><td class="err">Z</td><td>${artNr}</td><td class="notOnline">No</td><td class="notOnline">No</td><td class="notOnline">Not Online</td><td><a href="${country}${artNr}/" target="_blank">Product page</a></td>`;
+                }
+                // console.log(html.innerHTML);
+            }
+            catch(error){
+                console.log(error);
+            }   
+        }
+        loader.style.display = 'none';
+    }
+    button.onclick = function(){
+        loader.style.display = 'block';
+        html2.innerHTML = `<tr><th class="err">ID</th><th>Article</th><th>Online</th><th>Buyable</th><th>Article Status</th><th>Link</th>`;
+        checkStock(textValue);
+    }
+}
+
+button2.onclick = function(){
+    html.innerHTML = "";
+    html2.innerHTML = "";
+    message.value = "";
+}
+</script>
+    </body>
+</html>
