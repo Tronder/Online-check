@@ -8,3 +8,6 @@ First: Create a new shortcut to chrome. Then right-click on the new shortcut ico
 Beta.2:
 links open productdetails in new window.
 color codes and online/buyable indicatiors.
+
+Beta 3:
+Added excel download from the result list.
