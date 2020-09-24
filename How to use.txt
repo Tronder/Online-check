@@ -11,3 +11,6 @@ color codes and online/buyable indicatiors.
 
 Beta 3:
 Added excel download from the result list.
+
+Beta 4:
+Can check all sites.
