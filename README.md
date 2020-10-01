@@ -7,6 +7,7 @@ First: Create a new shortcut to chrome. Then right-click on the new shortcut ico
 2. Open OnlineChecker.html
 3. Select country, paste articles and then click search.
 
+Changes:
 Beta.2:
 links open productdetails in new window.
 color codes and online/buyable indicatiors.
