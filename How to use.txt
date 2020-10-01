@@ -14,3 +14,5 @@ Added excel download from the result list.
 
 Beta 4:
 Can check all sites.
+
+Beta 5: Visuals
